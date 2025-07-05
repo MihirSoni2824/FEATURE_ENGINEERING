@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Performance Analysis</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Student Performance Analysis</h1>
+        <div class="feature-engineering">
+            <h2>Feature Engineering</h2>
+            <div id="dfHead"></div>
+        </div>
+        <div class="hyperparameter-tuning">
+            <h2>Hyperparameter Tuning Results</h2>
+            <div id="tuningResults"></div>
+        </div>
+        <button onclick="fetchResults()" class="minecraft-button">Run Analysis</button>
+    </div>
+
+    <script>
+        function fetchResults() {
+            fetch('/process', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('dfHead').innerHTML = data.df_head;
+                document.getElementById('tuningResults').innerHTML = `
+                    <p><strong>Best Parameters:</strong> ${JSON.stringify(data.best_params)}</p>
+                    <p><strong>Best Score:</strong> ${data.best_score}</p>
+                    <p><strong>Test Accuracy:</strong> ${data.accuracy}</p>
+                `;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
